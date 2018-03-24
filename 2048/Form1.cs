@@ -18,18 +18,19 @@ namespace _2048
         }
         Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
         public static int n = 4;
-        Button[,] cell = new Button[n, n];        
+        Button[,] cell = new Button[n, n];
         int cellHeight = 90;
         int cellWidth = 90;
         int leftFrame = 20;
         int topFrame = 60;
-        int netSize = 10;        
+        int netSize = 10;
         int num = 2;
-        Label score = new Label();
+        Button score = new Button();
+        Button newgame = new Button();      
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.BackColor = Color.FromArgb(187, 173, 160);            
+            this.BackColor = Color.FromArgb(187, 173, 160);
 
             for (int j = 0; j < n; j++)
             {
@@ -48,31 +49,50 @@ namespace _2048
                     this.cell[i, j].PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
                     this.Controls.Add(cell[i, j]);
 
-                    this.ClientSize = new Size(n * (cellHeight + netSize) + 2 * leftFrame - netSize, n * (cellWidth + netSize) + 2 * topFrame - netSize);
+                    
                 }
             }
-            //cell[random.Next(0, n), random.Next(0, n)].Text = num.ToString();
-            //cell[random.Next(0, n), random.Next(0, n)].Text = num.ToString();
+            this.ClientSize = new Size(n * (cellHeight + netSize) + 2 * leftFrame - netSize, n * (cellWidth + netSize) + 2 * topFrame - netSize);
+            
+
             AddNum();
             AddNum();
             Painting();
 
-            score.Left = leftFrame;           
-            score.Top =15;
+            score.Left = leftFrame;
+            score.Top = 10;
+            score.Width = cellWidth * 2 + netSize;
+            score.FlatStyle = FlatStyle.Flat;
+            score.FlatAppearance.BorderSize = 0;
+            score.BackColor = Color.FromArgb(151, 139, 128);
             score.Text = "0";
             score.AutoSize = true;
             score.Font = new Font("century gothic", 20, FontStyle.Bold);
-            //score.ForeColor=Color.FromArgb(119, 110, 101);
             score.ForeColor = Color.White;
+            this.score.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
             this.Controls.Add(score);
+
+            newgame.Left = leftFrame + cellWidth * 2 + 2 * netSize; ;
+            newgame.Top = 10;
+            newgame.Width = cellWidth * 2 + netSize;
+            newgame.FlatStyle = FlatStyle.Flat;
+            newgame.FlatAppearance.BorderSize = 0;
+            newgame.BackColor = Color.FromArgb(151, 139, 128);
+            newgame.Text = "new game";
+            newgame.AutoSize = true;
+            newgame.Font = new Font("century gothic", 20, FontStyle.Bold);
+            newgame.ForeColor = Color.White;
+            this.newgame.Click += new System.EventHandler(this.NewGame);
+            this.newgame.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
+            this.Controls.Add(newgame);
         }
 
         private void Form1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            bool add = false;
+            bool add = false;            
             switch (e.KeyCode)
             {
-                case Keys.W:
+                case Keys.Up:
                     for (int i = 0; i < 4; i++)
                     {
                         for (int j = 0; j < 4; j++)
@@ -111,7 +131,7 @@ namespace _2048
                     }
                     Painting();
                     break;
-                case Keys.S:
+                case Keys.Down:
                     for (int i = 0; i < 4; i++)
                     {
                         for (int j = 3; j >= 0; j--)
@@ -150,7 +170,7 @@ namespace _2048
                     }
                     Painting();
                     break;
-                case Keys.D:
+                case Keys.Right:
                     for (int j = 0; j < 4; j++)
                     {
                         for (int i = 3; i >= 0; i--)
@@ -189,7 +209,7 @@ namespace _2048
                     }
                     Painting();
                     break;
-                case Keys.A:
+                case Keys.Left:
                     for (int j = 0; j < 4; j++)
                     {
                         for (int i = 0; i < 4; i++)
@@ -234,6 +254,8 @@ namespace _2048
             {
                 AddNum();
             }
+
+            GameOver();
         }
 
         private void AddNum()
@@ -246,12 +268,75 @@ namespace _2048
             {
                 cell[x, y].Text = num.ToString();
                 cell[x, y].Focus();
-                cell[x, y].BackColor = Color.White;
+                cell[x, y].BackColor = Color.White;                
             }
             else
             {
                 goto Mark;
             }
+        }
+
+        private void NewGame(object sender, EventArgs e)
+        {
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    cell[i, j].Text = "";
+                }
+            }
+            score.Text = "0";
+            AddNum();
+            AddNum();
+            Painting();
+        }
+
+        private void GameOver()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (i - 1 >= 0)
+                    {
+                        if (cell[i - 1,j].Text == cell[i,j].Text)
+                        {
+                            return;
+                        }
+                    }
+
+                    if (i + 1 < 4)
+                    {
+                        if (cell[i + 1,j].Text == cell[i,j].Text)
+                        {
+                            return;
+                        }
+                    }
+
+                    if (j - 1 >= 0)
+                    {
+                        if (cell[i,j - 1].Text == cell[i,j].Text)
+                        {
+                            return;
+                        }
+                    }
+
+                    if (j + 1 < 4)
+                    {
+                        if (cell[i,j + 1].Text == cell[i,j].Text)
+                        {
+                            return;
+                        }
+                    }
+
+                    if (cell[i,j].Text == "")
+                    {
+                        return;
+                    }
+                }
+            }
+
+            MessageBox.Show("Game over! \nYou score: "+score.Text);           
         }
 
         private void Painting()
@@ -299,6 +384,14 @@ namespace _2048
                             cell[i, j].BackColor = Color.FromArgb(237, 200, 80);
                             cell[i, j].ForeColor = Color.White;
                             break;
+                        case "1024":
+                            cell[i, j].BackColor = Color.FromArgb(236, 196, 64);
+                            cell[i, j].ForeColor = Color.White;
+                            break;
+                        case "2048":
+                            cell[i, j].BackColor = Color.FromArgb(237, 193, 47);
+                            cell[i, j].ForeColor = Color.White;
+                            break;
                         case "":
                             cell[i, j].BackColor = Color.FromArgb(205, 193, 180);
                             cell[i, j].ForeColor = Color.FromArgb(119, 110, 101);
@@ -306,6 +399,6 @@ namespace _2048
                     }
                 }
             }
-        }
+        }        
     }
 }
