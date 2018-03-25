@@ -26,7 +26,7 @@ namespace _2048
         int netSize = 10;
         int num = 2;
         Button score = new Button();
-        Button newgame = new Button();      
+        Button newgame = new Button();
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -46,14 +46,11 @@ namespace _2048
                     cell[i, j].Left = leftFrame + i * (cell[i, j].Width + netSize);
                     cell[i, j].Top = topFrame + j * (cell[i, j].Height + netSize);
 
-                    this.cell[i, j].PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
+                    this.cell[i, j].PreviewKeyDown += new PreviewKeyDownEventHandler(this.Form1_PreviewKeyDown);
                     this.Controls.Add(cell[i, j]);
-
-                    
                 }
             }
             this.ClientSize = new Size(n * (cellHeight + netSize) + 2 * leftFrame - netSize, n * (cellWidth + netSize) + 2 * topFrame - netSize);
-            
 
             AddNum();
             AddNum();
@@ -89,15 +86,15 @@ namespace _2048
 
         private void Form1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            bool add = false;            
+            bool add = false;
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < n; i++)
                     {
-                        for (int j = 0; j < 4; j++)
+                        for (int j = 0; j < n; j++)
                         {
-                            for (int k = j + 1; k < 4; k++)
+                            for (int k = j + 1; k < n; k++)
                             {
                                 if (cell[i, k].Text == "")
                                 {
@@ -132,9 +129,9 @@ namespace _2048
                     Painting();
                     break;
                 case Keys.Down:
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < n; i++)
                     {
-                        for (int j = 3; j >= 0; j--)
+                        for (int j = n - 1; j >= 0; j--)
                         {
                             for (int k = j - 1; k >= 0; k--)
                             {
@@ -171,9 +168,9 @@ namespace _2048
                     Painting();
                     break;
                 case Keys.Right:
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < n; j++)
                     {
-                        for (int i = 3; i >= 0; i--)
+                        for (int i = n - 1; i >= 0; i--)
                         {
                             for (int k = i - 1; k >= 0; k--)
                             {
@@ -210,11 +207,11 @@ namespace _2048
                     Painting();
                     break;
                 case Keys.Left:
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < n; j++)
                     {
-                        for (int i = 0; i < 4; i++)
+                        for (int i = 0; i < n; i++)
                         {
-                            for (int k = i + 1; k < 4; k++)
+                            for (int k = i + 1; k < n; k++)
                             {
                                 if (cell[k, j].Text == "")
                                 {
@@ -268,7 +265,7 @@ namespace _2048
             {
                 cell[x, y].Text = num.ToString();
                 cell[x, y].Focus();
-                cell[x, y].BackColor = Color.White;                
+                cell[x, y].BackColor = Color.White;
             }
             else
             {
@@ -293,21 +290,21 @@ namespace _2048
 
         private void GameOver()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < n; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < n; j++)
                 {
                     if (i - 1 >= 0)
                     {
-                        if (cell[i - 1,j].Text == cell[i,j].Text)
+                        if (cell[i - 1, j].Text == cell[i, j].Text)
                         {
                             return;
                         }
                     }
 
-                    if (i + 1 < 4)
+                    if (i + 1 < n)
                     {
-                        if (cell[i + 1,j].Text == cell[i,j].Text)
+                        if (cell[i + 1, j].Text == cell[i, j].Text)
                         {
                             return;
                         }
@@ -315,28 +312,28 @@ namespace _2048
 
                     if (j - 1 >= 0)
                     {
-                        if (cell[i,j - 1].Text == cell[i,j].Text)
+                        if (cell[i, j - 1].Text == cell[i, j].Text)
                         {
                             return;
                         }
                     }
 
-                    if (j + 1 < 4)
+                    if (j + 1 < n)
                     {
-                        if (cell[i,j + 1].Text == cell[i,j].Text)
+                        if (cell[i, j + 1].Text == cell[i, j].Text)
                         {
                             return;
                         }
                     }
 
-                    if (cell[i,j].Text == "")
+                    if (cell[i, j].Text == "")
                     {
                         return;
                     }
                 }
             }
 
-            MessageBox.Show("Game over! \nYou score: "+score.Text);           
+            MessageBox.Show("Game over! \nYou score: " + score.Text);
         }
 
         private void Painting()
@@ -399,6 +396,6 @@ namespace _2048
                     }
                 }
             }
-        }        
+        }
     }
 }
